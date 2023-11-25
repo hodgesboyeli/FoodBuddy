@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">FoodBuddy</string>
+    <string name="tvTitle1">FoodBuddy</string>
+    <string name="btLogin">Login</string>
 </resources>
