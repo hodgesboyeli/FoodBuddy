@@ -2,4 +2,6 @@
     <string name="app_name">FoodBuddy</string>
     <string name="tvTitle1">FoodBuddy</string>
     <string name="btLogin">Login</string>
+    <string name="tvTitle2">Welcome!</string>
+    <string name="btFindFood">Find Food</string>
 </resources>
