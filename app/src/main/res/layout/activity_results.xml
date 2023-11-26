@@ -9,27 +9,42 @@
     <ListView
         android:id="@+id/lvResults"
         android:layout_width="411dp"
-        android:layout_height="657dp"
+        android:layout_height="477dp"
+        android:layout_above="@+id/btSearch"
+        android:layout_below="@+id/tvSearch"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="1.0" />
+        app:layout_constraintVertical_bias="0.498" />
 
     <EditText
         android:id="@+id/tvSearch"
-        android:layout_width="378dp"
+        android:layout_width="273dp"
         android:layout_height="40dp"
         android:background="#CFCFCF"
         android:ems="10"
-        android:hint=" Search"
+        android:hint=" Enter Zip Code..."
         android:inputType="number"
         android:textSize="20sp"
         app:layout_constraintBottom_toBottomOf="@+id/lvResults"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.484"
+        app:layout_constraintHorizontal_bias="0.115"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.023" />
+
+    <Button
+        android:id="@+id/btSearch"
+        android:layout_width="97dp"
+        android:layout_height="41dp"
+        android:backgroundTint="#4CAF50"
+        android:text="Search"
+        app:layout_constraintBottom_toBottomOf="@+id/lvResults"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.949"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.021" />
 </androidx.constraintlayout.widget.ConstraintLayout>
