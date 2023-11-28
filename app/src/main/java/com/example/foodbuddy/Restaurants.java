@@ -9,15 +9,20 @@ public class Restaurants {
     private int zipCode;
 
     private String address;
+    private boolean isFavortite;
+
 
     public Restaurants() {
 
     }
-
-    public Restaurants(String name, float rating, int zipCode, String address) {
+    public boolean getIsFavorite() {
+        return isFavortite;
+    }
+    public Restaurants(String name, float rating, int zipCode, String address, boolean isFavortite) {
         this.name = name;
         this.rating = rating;
         this.zipCode = zipCode;
         this.address = address;
+        this.isFavortite = isFavortite;
     }
 }
