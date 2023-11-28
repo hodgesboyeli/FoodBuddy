@@ -37,7 +37,7 @@ public class RestaurantListAdapter extends ArrayAdapter<Restaurants> {
             nameTextView.setText(restaurant.getName());
 
             // Set restaurant address
-            addressTextView.setText(restaurant.getAddress());
+            addressTextView.setText(restaurant.getAddress() + ", " +  restaurant.getZipCode());
 
             // Set restaurant rating
             ratingTextView.setText(String.valueOf(restaurant.getRating()));

@@ -4,4 +4,6 @@
     <string name="btLogin">Login</string>
     <string name="tvTitle2">Welcome!</string>
     <string name="btFindFood">Find Food</string>
+    <string name="tvEnterZip">Enter Zipcode:</string>
+    <string name="btFindByZip">Search</string>
 </resources>

@@ -1,5 +1,6 @@
 package com.example.foodbuddy;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -14,6 +15,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
@@ -26,11 +28,17 @@ public class Results extends AppCompatActivity {
     private ListView lvResults;
     private Button btSearch;
     private FirebaseFirestore db;
+    private String zipCode;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_results);
+
+        Intent intent = getIntent();
+        if (intent != null && intent.hasExtra("ZIPCODE")) {
+            zipCode = intent.getStringExtra("ZIPCODE");
+        }
 
         // Initialize views
         tvSearch = findViewById(R.id.tvSearch);
@@ -39,6 +47,7 @@ public class Results extends AppCompatActivity {
 
         // Initialize Firebase
         db = FirebaseFirestore.getInstance();
+        showResults(intent);
 
         // Set click listener for search button
         btSearch.setOnClickListener(new View.OnClickListener() {
@@ -49,12 +58,40 @@ public class Results extends AppCompatActivity {
         });
     }
 
-    private void performSearch() {
-        String zipCode = tvSearch.getText().toString();
-
+    private void showResults(Intent intent) {
         // Query the Firestore database
         db.collection("Restaurants")
                 .whereEqualTo("zipCode", Integer.parseInt(zipCode))
+                .get()
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        if (task.isSuccessful()) {
+                            List<Restaurants> restaurants = new ArrayList<>();
+                            for (QueryDocumentSnapshot document : task.getResult()) {
+                                Restaurants restaurant = document.toObject(Restaurants.class);
+                                restaurants.add(restaurant);
+                            }
+
+                            // Update the ListView with the retrieved restaurants
+                            RestaurantListAdapter adapter = new RestaurantListAdapter(Results.this, restaurants);
+                            lvResults.setAdapter(adapter);
+                        } else {
+                            // Handle errors
+                            Exception exception = task.getException();
+                            if (exception != null) {
+                                exception.printStackTrace();
+                            }
+                        }
+                    }
+                });
+    }
+    private void performSearch() {
+        String restaurantName = tvSearch.getText().toString();
+        // Query the Firestore database
+        db.collection("Restaurants")
+                .whereEqualTo("zipCode", Integer.parseInt(zipCode))
+                .whereEqualTo("name", restaurantName)
                 .get()
                 .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                     @Override
