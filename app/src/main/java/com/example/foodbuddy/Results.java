@@ -22,6 +22,7 @@ import com.google.firebase.firestore.QuerySnapshot;
 import java.util.ArrayList;
 import java.util.List;
 
+//https://www.google.com/maps/dir//(STRING)?entry=ttu
 public class Results extends AppCompatActivity {
 
     private EditText tvSearch;
