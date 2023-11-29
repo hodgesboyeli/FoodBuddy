@@ -36,6 +36,10 @@ public class Results extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_results);
 
+        Button btHome = findViewById(R.id.btHome);
+        Button btFavorite = findViewById(R.id.btFavorite);
+        Button btUser = findViewById(R.id.btUser);
+
         Intent intent = getIntent();
         if (intent != null && intent.hasExtra("ZIPCODE")) {
             zipCode = intent.getStringExtra("ZIPCODE");
@@ -55,6 +59,13 @@ public class Results extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 performSearch();
+            }
+        });
+
+        btHome.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(Results.this, FindFood.class));
             }
         });
     }

@@ -18,6 +18,9 @@ public class FindByZip extends AppCompatActivity {
 
         final EditText inputZipcode = (EditText) findViewById(R.id.etZip);
         final Button findByZip = (Button) findViewById(R.id.btFindByZip);
+        Button btHome = findViewById(R.id.btHome);
+        Button btFavorite = findViewById(R.id.btFavorite);
+        Button btUser = findViewById(R.id.btUser);
         findByZip.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -28,6 +31,13 @@ public class FindByZip extends AppCompatActivity {
                     intent.putExtra("ZIPCODE", zipcode);
                     startActivity(intent);
                 }
+            }
+        });
+
+        btHome.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(FindByZip.this, FindFood.class));
             }
         });
 
