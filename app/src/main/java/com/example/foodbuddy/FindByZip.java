@@ -41,6 +41,13 @@ public class FindByZip extends AppCompatActivity {
             }
         });
 
+        btFavorite.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(FindByZip.this, Favorites.class));
+            }
+        });
+
 
     }
 }

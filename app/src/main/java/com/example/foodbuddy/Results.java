@@ -2,9 +2,7 @@ package com.example.foodbuddy;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
@@ -15,7 +13,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
@@ -47,7 +44,7 @@ public class Results extends AppCompatActivity {
 
         // Initialize views
         tvSearch = findViewById(R.id.tvSearch);
-        lvResults = findViewById(R.id.lvResults);
+        lvResults = findViewById(R.id.lvFavorites);
         btSearch = findViewById(R.id.btSearch);
 
         // Initialize Firebase
@@ -66,6 +63,13 @@ public class Results extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 startActivity(new Intent(Results.this, FindFood.class));
+            }
+        });
+
+        btFavorite.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(Results.this, Favorites.class));
             }
         });
     }

@@ -6,4 +6,5 @@
     <string name="btFindFood">Find Food</string>
     <string name="tvEnterZip">Enter Zipcode:</string>
     <string name="btFindByZip">Search</string>
+    <string name="favTitle">Favorites</string>
 </resources>
