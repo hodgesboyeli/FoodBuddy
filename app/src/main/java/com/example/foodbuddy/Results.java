@@ -140,6 +140,13 @@ public class Results extends AppCompatActivity {
                                 // Update the ListView with the retrieved restaurants
                                 RestaurantListAdapter adapter = new RestaurantListAdapter(Results.this, restaurants);
                                 lvResults.setAdapter(adapter);
+                                lvResults.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                                    @Override
+                                    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                                        Restaurants clickedItem = (Restaurants) parent.getItemAtPosition(position);
+                                        showChoicesDialog(clickedItem);
+                                    }
+                                });
                             } else {
                                 // Handle errors
                                 Exception exception = task.getException();
