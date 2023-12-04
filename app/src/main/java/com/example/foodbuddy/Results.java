@@ -13,6 +13,7 @@ import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -35,6 +36,8 @@ public class Results extends AppCompatActivity {
     private Button btSearch;
     private FirebaseFirestore db;
     private String zipCode;
+
+    private String docID;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -96,6 +99,7 @@ public class Results extends AppCompatActivity {
                                 List<Restaurants> restaurants = new ArrayList<>();
                                 for (QueryDocumentSnapshot document : task.getResult()) {
                                     Restaurants restaurant = document.toObject(Restaurants.class);
+                                    restaurant.setId(document.getId());
                                     restaurants.add(restaurant);
                                     restaurant.clearRatingValues();
                                     Log.d(TAG, "Zipcode is: " + document.getDouble("zipCode"));
@@ -166,6 +170,7 @@ public class Results extends AppCompatActivity {
 
         Button btGetDir = dialog.findViewById(R.id.btGetDirections);
         Button btAddRate = dialog.findViewById(R.id.btAddRating);
+        Button btMakeFavorite = dialog.findViewById(R.id.btMakeFavorite);
 
         String restAddress = clickedItem.getAddress() + clickedItem.getZipCode();
         String restName = clickedItem.getName();
@@ -189,6 +194,35 @@ public class Results extends AppCompatActivity {
                 dialog.dismiss();
             }
         });
+
+        btMakeFavorite.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // Get a reference to the specific document in the "Restaurants" collection
+                String restaurantId = clickedItem.getId(); // Assuming you have a method to get the restaurant ID
+                if (restaurantId != null) {
+                    db.collection("Restaurants").document(restaurantId)
+                            .update("isFavorite", true)
+                            .addOnCompleteListener(new OnCompleteListener<Void>() {
+                                @Override
+                                public void onComplete(@NonNull Task<Void> task) {
+                                    if (task.isSuccessful()) {
+                                        // Update the UI or show a toast message
+                                        Toast.makeText(Results.this, "Restaurant Favorited!", Toast.LENGTH_SHORT).show();
+                                    } else {
+                                        // Handle errors
+                                        Exception exception = task.getException();
+                                        if (exception != null) {
+                                            exception.printStackTrace();
+                                        }
+                                    }
+                                }
+                            });
+                    dialog.dismiss(); // Close the dialog after updating the favorite status
+                }
+            }
+        });
+
 
         dialog.show();
     }

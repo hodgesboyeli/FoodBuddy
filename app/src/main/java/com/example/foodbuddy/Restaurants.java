@@ -6,6 +6,7 @@ import lombok.Data;
 
 @Data
 public class Restaurants implements Serializable {
+    private String id;
     private String name;
     private float rating;
     private float ratingSum = this.rating;
@@ -21,6 +22,15 @@ public class Restaurants implements Serializable {
     public boolean getIsFavorite() {
         return isFavorite;
     }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public String getId() {
+        return id;
+    }
+
     public String getName() {return name;}
     public Float getRating() {return rating;}
     public void incrementRatingCount(){ratingCount++;}
@@ -39,7 +49,8 @@ public class Restaurants implements Serializable {
     }
 
 
-    public Restaurants(String name, float rating, int ratingCount, float ratingSum, int zipCode, String address, boolean isFavorite) {
+    public Restaurants(String id, String name, float rating, int ratingCount, float ratingSum, int zipCode, String address, boolean isFavorite) {
+        this.id = id;
         this.name = name;
         this.rating = rating;
         this.ratingCount = ratingCount;
