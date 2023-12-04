@@ -1,8 +1,15 @@
 package com.example.foodbuddy;
 
+import static android.content.ContentValues.TAG;
+
+import android.app.Dialog;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
+import android.view.Window;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
@@ -13,6 +20,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
@@ -55,7 +63,7 @@ public class Results extends AppCompatActivity {
         btSearch.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                performSearch();
+                showResults(intent);;
             }
         });
 
@@ -75,61 +83,106 @@ public class Results extends AppCompatActivity {
     }
 
     private void showResults(Intent intent) {
-        // Query the Firestore database
-        db.collection("Restaurants")
-                .whereEqualTo("zipCode", Integer.parseInt(zipCode))
-                .get()
-                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                    @Override
-                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                        if (task.isSuccessful()) {
-                            List<Restaurants> restaurants = new ArrayList<>();
-                            for (QueryDocumentSnapshot document : task.getResult()) {
-                                Restaurants restaurant = document.toObject(Restaurants.class);
-                                restaurants.add(restaurant);
-                            }
-
-                            // Update the ListView with the retrieved restaurants
-                            RestaurantListAdapter adapter = new RestaurantListAdapter(Results.this, restaurants);
-                            lvResults.setAdapter(adapter);
-                        } else {
-                            // Handle errors
-                            Exception exception = task.getException();
-                            if (exception != null) {
-                                exception.printStackTrace();
-                            }
-                        }
-                    }
-                });
-    }
-    private void performSearch() {
         String restaurantName = tvSearch.getText().toString();
-        // Query the Firestore database
-        db.collection("Restaurants")
-                .whereEqualTo("zipCode", Integer.parseInt(zipCode))
-                .whereEqualTo("name", restaurantName)
-                .get()
-                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                    @Override
-                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                        if (task.isSuccessful()) {
-                            List<Restaurants> restaurants = new ArrayList<>();
-                            for (QueryDocumentSnapshot document : task.getResult()) {
-                                Restaurants restaurant = document.toObject(Restaurants.class);
-                                restaurants.add(restaurant);
-                            }
+        if (restaurantName.isEmpty()){
+            db.collection("Restaurants")
+                    .whereEqualTo("zipCode", Integer.parseInt(zipCode))
+                    .orderBy("rating", Query.Direction.DESCENDING)
+                    .get()
+                    .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                        @Override
+                        public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                            if (task.isSuccessful()) {
+                                List<Restaurants> restaurants = new ArrayList<>();
+                                for (QueryDocumentSnapshot document : task.getResult()) {
+                                    Restaurants restaurant = document.toObject(Restaurants.class);
+                                    restaurants.add(restaurant);
+                                    restaurant.clearRatingValues();
+                                    Log.d(TAG, "Zipcode is: " + document.getDouble("zipCode"));
 
-                            // Update the ListView with the retrieved restaurants
-                            RestaurantListAdapter adapter = new RestaurantListAdapter(Results.this, restaurants);
-                            lvResults.setAdapter(adapter);
-                        } else {
-                            // Handle errors
-                            Exception exception = task.getException();
-                            if (exception != null) {
-                                exception.printStackTrace();
+                                }
+
+                                // Update the ListView with the retrieved restaurants
+                                RestaurantListAdapter adapter = new RestaurantListAdapter(Results.this, restaurants);
+                                lvResults.setAdapter(adapter);
+                                lvResults.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                                    @Override
+                                    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                                        Restaurants clickedItem = (Restaurants) parent.getItemAtPosition(position);
+                                        showChoicesDialog(clickedItem);
+                                    }
+                                });
+                            } else {
+                                // Handle errors
+                                Exception exception = task.getException();
+                                if (exception != null) {
+                                    exception.printStackTrace();
+                                }
                             }
                         }
-                    }
-                });
+                    });
+        }else{
+            db.collection("Restaurants")
+                    .whereEqualTo("zipCode", Integer.parseInt(zipCode))
+                    .whereEqualTo("name", restaurantName)
+                    .orderBy("rating", Query.Direction.DESCENDING)
+                    .get()
+                    .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                        @Override
+                        public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                            if (task.isSuccessful()) {
+                                List<Restaurants> restaurants = new ArrayList<>();
+                                for (QueryDocumentSnapshot document : task.getResult()) {
+                                    Restaurants restaurant = document.toObject(Restaurants.class);
+                                    restaurants.add(restaurant);
+                                }
+
+                                // Update the ListView with the retrieved restaurants
+                                RestaurantListAdapter adapter = new RestaurantListAdapter(Results.this, restaurants);
+                                lvResults.setAdapter(adapter);
+                            } else {
+                                // Handle errors
+                                Exception exception = task.getException();
+                                if (exception != null) {
+                                    exception.printStackTrace();
+                                }
+                            }
+                        }
+                    });
+        }
+    }
+
+    private void showChoicesDialog(Restaurants clickedItem) {
+        final Dialog dialog = new Dialog(this);
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        dialog.setContentView(R.layout.activity_diolog_choices);
+
+        Button btGetDir = dialog.findViewById(R.id.btGetDirections);
+        Button btAddRate = dialog.findViewById(R.id.btAddRating);
+
+        String restAddress = clickedItem.getAddress() + clickedItem.getZipCode();
+        String restName = clickedItem.getName();
+
+        String googleMapsURL = "https://www.google.com/maps/dir//" + restAddress + "?entry=ttu";
+        btGetDir.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(googleMapsURL));
+                startActivity(browserIntent);
+                dialog.dismiss();
+            }
+        });
+
+        btAddRate.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(Results.this, AddRating.class);
+                intent.putExtra("RESTAURANT OBJECT", clickedItem);
+                startActivity(intent);
+                dialog.dismiss();
+            }
+        });
+
+        dialog.show();
     }
 }

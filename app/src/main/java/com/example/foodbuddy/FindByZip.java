@@ -17,11 +17,11 @@ public class FindByZip extends AppCompatActivity {
         setContentView(R.layout.activity_find_by_zip);
 
         final EditText inputZipcode = (EditText) findViewById(R.id.etZip);
-        final Button findByZip = (Button) findViewById(R.id.btFindByZip);
+        final Button btFindByZip = (Button) findViewById(R.id.btFindByZip);
         Button btHome = findViewById(R.id.btHome);
         Button btFavorite = findViewById(R.id.btFavorite);
         Button btUser = findViewById(R.id.btUser);
-        findByZip.setOnClickListener(new View.OnClickListener() {
+        btFindByZip.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 String zipcode = inputZipcode.getText().toString().trim();

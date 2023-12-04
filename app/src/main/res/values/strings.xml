@@ -7,4 +7,6 @@
     <string name="tvEnterZip">Enter Zipcode:</string>
     <string name="btFindByZip">Search</string>
     <string name="favTitle">Favorites</string>
+    <string name="btGetDirections">Get Directions</string>
+    <string name="btAddRating">Add Rating</string>
 </resources>
