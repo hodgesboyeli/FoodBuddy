@@ -170,7 +170,7 @@ public class Results extends AppCompatActivity {
 
         Button btGetDir = dialog.findViewById(R.id.btGetDirections);
         Button btAddRate = dialog.findViewById(R.id.btAddRating);
-        Button btMakeFavorite = dialog.findViewById(R.id.btMakeFavorite);
+        Button btMakeFavorite = dialog.findViewById(R.id.btUnfavorite);
 
         String restAddress = clickedItem.getAddress() + clickedItem.getZipCode();
         String restName = clickedItem.getName();
