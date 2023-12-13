@@ -35,6 +35,8 @@ public class Results extends AppCompatActivity {
     private Button btSearch;
     private FirebaseFirestore db;
     private String zipCode;
+    private String state;
+    private String city;
 
     private String docID;
 
@@ -50,18 +52,34 @@ public class Results extends AppCompatActivity {
         Button btFavorite = findViewById(R.id.btFavorite);
         Button btUser = findViewById(R.id.btUser);
 
-        Intent intent = getIntent();
-        if (intent != null && intent.hasExtra("ZIPCODE")) {
-            zipCode = intent.getStringExtra("ZIPCODE");
-        }
-
-        // Initialize views
         tvSearch = findViewById(R.id.tvSearch);
         lvResults = findViewById(R.id.lvFavorites);
         btSearch = findViewById(R.id.btSearch);
 
         // Initialize Firebase
         db = FirebaseFirestore.getInstance();
+
+        Intent intent = getIntent();
+        if (intent != null) {
+            Log.d("ResultsActivity", "Intent not null");
+            if (intent.hasExtra("ZIPCODE")) {
+                zipCode = intent.getStringExtra("ZIPCODE");
+                Log.d("ResultsActivity", "ZIPCODE: " + zipCode);
+            }
+
+            if (intent.hasExtra("STATE")) {
+                state = intent.getStringExtra("STATE");
+                Log.d("ResultsActivity", "STATE: " + state);
+            }
+
+            if (intent.hasExtra("CITY")) {
+                city = intent.getStringExtra("CITY");
+                Log.d("ResultsActivity", "CITY: " + city);
+            }
+        } else {
+            Log.d("ResultsActivity", "Intent is null");
+        }
+
         showResults(intent);
 
         tvSearch.addTextChangedListener(new TextWatcher() {
@@ -100,12 +118,43 @@ public class Results extends AppCompatActivity {
     private void showResults(Intent intent) {
         String restaurantName = tvSearch.getText().toString().toLowerCase().replaceAll("[\'-]", "");
 
+        if (intent != null) {
+            if (intent.hasExtra("ZIPCODE")) {
+                zipCode = intent.getStringExtra("ZIPCODE");
+            }
+
+            if (intent.hasExtra("STATE")) {
+                state = intent.getStringExtra("STATE").toLowerCase(); // Convert to lowercase
+            }
+
+            if (intent.hasExtra("CITY")) {
+                city = intent.getStringExtra("CITY").toLowerCase(); // Convert to lowercase
+            }
+        }
+
         // Fetch all restaurants if the query is empty
         if (restaurantName.isEmpty()) {
-            db.collection("Restaurants")
-                    .whereEqualTo("zipCode", Integer.parseInt(zipCode))
-                    .orderBy("rating", Query.Direction.DESCENDING)
-                    .get()
+            Query query;
+
+            if (zipCode != null) {
+                query = db.collection("Restaurants")
+                        .whereEqualTo("zipCode", Integer.parseInt(zipCode))
+                        .orderBy("rating", Query.Direction.DESCENDING);
+            } else if (state != null) {
+                query = db.collection("Restaurants")
+                        .whereEqualTo("state", state)
+                        .orderBy("state") // Use orderBy before whereEqualTo
+                        .orderBy("rating", Query.Direction.DESCENDING);
+            } else if (city != null) {
+                query = db.collection("Restaurants")
+                        .whereEqualTo("city", city)
+                        .orderBy("city") // Use orderBy before whereEqualTo
+                        .orderBy("rating", Query.Direction.DESCENDING);
+            } else {
+                return; // Do nothing if none of the search options are provided
+            }
+
+            query.get()
                     .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                         @Override
                         public void onComplete(@NonNull Task<QuerySnapshot> task) {

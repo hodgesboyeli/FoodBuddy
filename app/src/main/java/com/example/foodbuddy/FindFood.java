@@ -20,7 +20,7 @@ public class FindFood extends AppCompatActivity {
         btFindFood.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                startActivity(new Intent(FindFood.this, FindByZip.class));
+                startActivity(new Intent(FindFood.this, FindBy.class));
             }
         });
 
