@@ -5,6 +5,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -37,12 +38,53 @@ public class RestaurantListAdapter extends ArrayAdapter<Restaurants> {
             nameTextView.setText(restaurant.getName());
 
             // Set restaurant address
-            addressTextView.setText(restaurant.getAddress() + ", " +  restaurant.getZipCode());
+            addressTextView.setText(restaurant.getAddress() + ", " + restaurant.getZipCode());
 
             // Set restaurant rating
             ratingTextView.setText(String.valueOf(restaurant.getRating()));
+
+            // Set restaurant logo based on the name
+            ImageView logoImageView = itemView.findViewById(R.id.logoImageView);
+            setRestaurantLogo(restaurant.getName(), logoImageView);
         }
 
         return itemView;
+    }
+
+    private void setRestaurantLogo(String restaurantName, ImageView logoImageView) {
+        // Map restaurant names to their corresponding logo resource IDs
+        int logoResourceId = R.drawable.black;
+        switch (restaurantName) {
+            case "McDonald's":
+                logoResourceId = R.drawable.mcdonalds;
+                break;
+            case "Chick-fil-A":
+                logoResourceId = R.drawable.chickfila;
+                break;
+            case "Popeyes Louisiana Kitchen":
+                logoResourceId = R.drawable.popeyes;
+                break;
+            case "Zaxby's":
+                logoResourceId = R.drawable.zaxbys;
+                break;
+            case "Hardee's":
+                logoResourceId = R.drawable.hardees;
+                break;
+            case "Five Guys":
+                logoResourceId = R.drawable.fiveguys;
+                break;
+            case "Taco Bell":
+                logoResourceId = R.drawable.tacobell;
+                break;
+            case "Wendy's":
+                logoResourceId = R.drawable.wendys;
+                break;
+            case "Burger King":
+                logoResourceId = R.drawable.burgerking;
+                break;
+        }
+
+        // Set the restaurant logo
+        logoImageView.setImageResource(logoResourceId);
     }
 }

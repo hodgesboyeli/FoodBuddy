@@ -1,11 +1,11 @@
 package com.example.foodbuddy;
 
-import static android.content.ContentValues.TAG;
-
 import android.app.Dialog;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
 import android.view.Window;
@@ -28,7 +28,6 @@ import com.google.firebase.firestore.QuerySnapshot;
 import java.util.ArrayList;
 import java.util.List;
 
-//https://www.google.com/maps/dir//(STRING)?entry=ttu
 public class Results extends AppCompatActivity {
 
     private EditText tvSearch;
@@ -38,6 +37,9 @@ public class Results extends AppCompatActivity {
     private String zipCode;
 
     private String docID;
+
+    private List<Restaurants> allRestaurants = new ArrayList<>();
+    private RestaurantListAdapter adapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,11 +64,21 @@ public class Results extends AppCompatActivity {
         db = FirebaseFirestore.getInstance();
         showResults(intent);
 
-        // Set click listener for search button
-        btSearch.setOnClickListener(new View.OnClickListener() {
+        tvSearch.addTextChangedListener(new TextWatcher() {
             @Override
-            public void onClick(View v) {
-                showResults(intent);;
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                // Not needed for this implementation
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                // Update the results as the user types
+                showResults(intent);
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+                // Not needed for this implementation
             }
         });
 
@@ -86,8 +98,10 @@ public class Results extends AppCompatActivity {
     }
 
     private void showResults(Intent intent) {
-        String restaurantName = tvSearch.getText().toString();
-        if (restaurantName.isEmpty()){
+        String restaurantName = tvSearch.getText().toString().toLowerCase().replaceAll("[\'-]", "");
+
+        // Fetch all restaurants if the query is empty
+        if (restaurantName.isEmpty()) {
             db.collection("Restaurants")
                     .whereEqualTo("zipCode", Integer.parseInt(zipCode))
                     .orderBy("rating", Query.Direction.DESCENDING)
@@ -96,26 +110,14 @@ public class Results extends AppCompatActivity {
                         @Override
                         public void onComplete(@NonNull Task<QuerySnapshot> task) {
                             if (task.isSuccessful()) {
-                                List<Restaurants> restaurants = new ArrayList<>();
+                                allRestaurants.clear();
                                 for (QueryDocumentSnapshot document : task.getResult()) {
                                     Restaurants restaurant = document.toObject(Restaurants.class);
                                     restaurant.setId(document.getId());
-                                    restaurants.add(restaurant);
+                                    allRestaurants.add(restaurant);
                                     restaurant.clearRatingValues();
-                                    Log.d(TAG, "Zipcode is: " + document.getDouble("zipCode"));
-
                                 }
-
-                                // Update the ListView with the retrieved restaurants
-                                RestaurantListAdapter adapter = new RestaurantListAdapter(Results.this, restaurants);
-                                lvResults.setAdapter(adapter);
-                                lvResults.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                                    @Override
-                                    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                                        Restaurants clickedItem = (Restaurants) parent.getItemAtPosition(position);
-                                        showChoicesDialog(clickedItem);
-                                    }
-                                });
+                                updateListView(allRestaurants);
                             } else {
                                 // Handle errors
                                 Exception exception = task.getException();
@@ -125,42 +127,30 @@ public class Results extends AppCompatActivity {
                             }
                         }
                     });
-        }else{
-            db.collection("Restaurants")
-                    .whereEqualTo("zipCode", Integer.parseInt(zipCode))
-                    .whereEqualTo("name", restaurantName)
-                    .orderBy("rating", Query.Direction.DESCENDING)
-                    .get()
-                    .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                        @Override
-                        public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                            if (task.isSuccessful()) {
-                                List<Restaurants> restaurants = new ArrayList<>();
-                                for (QueryDocumentSnapshot document : task.getResult()) {
-                                    Restaurants restaurant = document.toObject(Restaurants.class);
-                                    restaurants.add(restaurant);
-                                }
-
-                                // Update the ListView with the retrieved restaurants
-                                RestaurantListAdapter adapter = new RestaurantListAdapter(Results.this, restaurants);
-                                lvResults.setAdapter(adapter);
-                                lvResults.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                                    @Override
-                                    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                                        Restaurants clickedItem = (Restaurants) parent.getItemAtPosition(position);
-                                        showChoicesDialog(clickedItem);
-                                    }
-                                });
-                            } else {
-                                // Handle errors
-                                Exception exception = task.getException();
-                                if (exception != null) {
-                                    exception.printStackTrace();
-                                }
-                            }
-                        }
-                    });
+        } else {
+            // Filter locally based on the user's input
+            List<Restaurants> filteredRestaurants = new ArrayList<>();
+            for (Restaurants restaurant : allRestaurants) {
+                String name = restaurant.getName().toLowerCase().replaceAll("[\'-]", "");
+                if (name.contains(restaurantName)) {
+                    filteredRestaurants.add(restaurant);
+                }
+            }
+            updateListView(filteredRestaurants);
         }
+    }
+
+    private void updateListView(List<Restaurants> restaurants) {
+        adapter = new RestaurantListAdapter(Results.this, restaurants);
+        lvResults.setAdapter(adapter);
+
+        lvResults.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Restaurants clickedItem = (Restaurants) parent.getItemAtPosition(position);
+                showChoicesDialog(clickedItem);
+            }
+        });
     }
 
     private void showChoicesDialog(Restaurants clickedItem) {
@@ -222,7 +212,6 @@ public class Results extends AppCompatActivity {
                 }
             }
         });
-
 
         dialog.show();
     }
