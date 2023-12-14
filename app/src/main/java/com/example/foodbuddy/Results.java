@@ -12,6 +12,7 @@ import android.view.Window;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.GridView;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -32,11 +33,13 @@ public class Results extends AppCompatActivity {
 
     private EditText tvSearch;
     private ListView lvResults;
-    private Button btSearch;
     private FirebaseFirestore db;
     private String zipCode;
-
     private String docID;
+
+    private GridView gvResults; // Add GridView
+    private Button btGrid;
+    private Button btList;
 
     private List<Restaurants> allRestaurants = new ArrayList<>();
     private RestaurantListAdapter adapter;
@@ -58,7 +61,9 @@ public class Results extends AppCompatActivity {
         // Initialize views
         tvSearch = findViewById(R.id.tvSearch);
         lvResults = findViewById(R.id.lvFavorites);
-        btSearch = findViewById(R.id.btSearch);
+        gvResults = findViewById(R.id.gvResults); // Initialize GridView
+        btGrid = findViewById(R.id.btGrid);
+        btList = findViewById(R.id.btList);
 
         // Initialize Firebase
         db = FirebaseFirestore.getInstance();
@@ -82,6 +87,20 @@ public class Results extends AppCompatActivity {
             }
         });
 
+        btGrid.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                toggleGridView(true);
+            }
+        });
+
+        btList.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                toggleGridView(false);
+            }
+        });
+
         btHome.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -96,6 +115,38 @@ public class Results extends AppCompatActivity {
             }
         });
     }
+
+
+    private void toggleGridView(boolean showGrid) {
+        if (showGrid) {
+            lvResults.setVisibility(View.GONE);
+            gvResults.setVisibility(View.VISIBLE);
+            btGrid.setVisibility(View.GONE);
+            btList.setVisibility(View.VISIBLE);
+            updateGridView(allRestaurants);
+        } else {
+            gvResults.setVisibility(View.GONE);
+            lvResults.setVisibility(View.VISIBLE);
+            btList.setVisibility(View.GONE);
+            btGrid.setVisibility(View.VISIBLE);
+            updateListView(allRestaurants);
+        }
+    }
+
+    private void updateGridView(List<Restaurants> restaurants) {
+        GridViewAdapter adapter = new GridViewAdapter(Results.this, restaurants);
+        gvResults.setAdapter(adapter);
+
+        // Set GridView item click listener
+        gvResults.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Restaurants clickedItem = (Restaurants) parent.getItemAtPosition(position);
+                showChoicesDialog(clickedItem);
+            }
+        });
+    }
+
 
     private void showResults(Intent intent) {
         String restaurantName = tvSearch.getText().toString().toLowerCase().replaceAll("[\'-]", "");

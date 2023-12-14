@@ -38,6 +38,41 @@
         app:layout_constraintVertical_bias="1.0" />
 
     <Button
+        android:id="@+id/btGrid"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:backgroundTint="#00FFFFFF"
+        android:fontFamily="@font/font_awesome_solid"
+        android:text="grip-vertical"
+        android:textColor="#A1A1A1"
+        android:textSize="30sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.06"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.0"
+        android:visibility="visible" />
+
+    <Button
+        android:id="@+id/btList"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:backgroundTint="#00FFFFFF"
+        android:fontFamily="@font/font_awesome_solid"
+        android:text="list"
+        android:textColor="#A1A1A1"
+        android:textSize="30sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.06"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.0"
+        android:visibility="gone" />
+
+
+    <Button
         android:id="@+id/btUser"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -57,7 +92,6 @@
         android:id="@+id/lvFavorites"
         android:layout_width="411dp"
         android:layout_height="477dp"
-        android:layout_above="@+id/btSearch"
         android:layout_below="@+id/tvSearch"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -68,7 +102,7 @@
 
     <EditText
         android:id="@+id/tvSearch"
-        android:layout_width="405dp"
+        android:layout_width="360dp"
         android:layout_height="40dp"
         android:background="#CFCFCF"
         android:ems="10"
@@ -77,9 +111,25 @@
         android:textSize="20sp"
         app:layout_constraintBottom_toBottomOf="@+id/lvFavorites"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.454"
+        app:layout_constraintHorizontal_bias="0.070"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.006" />
+
+    <GridView
+        android:id="@+id/gvResults"
+        android:layout_width="match_parent"
+        android:layout_height="600dp"
+        android:clickable="true"
+        android:horizontalSpacing="8dp"
+        android:numColumns="2"
+        android:verticalSpacing="8dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.400" />
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>
