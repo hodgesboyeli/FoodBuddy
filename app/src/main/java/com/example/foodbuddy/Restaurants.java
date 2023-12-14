@@ -13,9 +13,6 @@ public class Restaurants implements Serializable {
     private int ratingCount = 1;
     private int zipCode;
     private String address;
-    private String city;
-    private String state;
-
     private boolean isFavorite;
 
 
@@ -45,25 +42,21 @@ public class Restaurants implements Serializable {
     public int getRatingCount(){return ratingCount;}
     public float getRatingSum(){return ratingSum;}
     public String getAddress() {return address;}
-    public String getCity() {return city;}
-    public String getState() {return state;}
-
     public int getZipCode() {return zipCode;}
     public void clearRatingValues(){
         ratingSum = rating;
         ratingCount = 1;
     }
 
-    public Restaurants(String id, String name, float rating, float ratingSum, int ratingCount, int zipCode, String address, String city, String state, boolean isFavorite) {
+
+    public Restaurants(String id, String name, float rating, int ratingCount, float ratingSum, int zipCode, String address, boolean isFavorite) {
         this.id = id;
         this.name = name;
         this.rating = rating;
-        this.ratingSum = ratingSum;
         this.ratingCount = ratingCount;
+        this.ratingSum = ratingSum;
         this.zipCode = zipCode;
         this.address = address;
-        this.city = city;
-        this.state = state;
         this.isFavorite = isFavorite;
     }
 }

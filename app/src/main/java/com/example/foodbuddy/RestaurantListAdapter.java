@@ -32,16 +32,13 @@ public class RestaurantListAdapter extends ArrayAdapter<Restaurants> {
         if (restaurant != null) {
             TextView nameTextView = itemView.findViewById(R.id.nameTextView);
             TextView addressTextView = itemView.findViewById(R.id.addressTextView);
-            //TextView cityTextView = itemView.findViewById(R.id.cityTextView);
-            //TextView stateTextView = itemView.findViewById(R.id.stateTextView);
-
             TextView ratingTextView = itemView.findViewById(R.id.ratingTextView);
 
             // Set restaurant name
             nameTextView.setText(restaurant.getName());
 
             // Set restaurant address
-            addressTextView.setText(restaurant.getAddress() + ", " + restaurant.getCity() + ", " + restaurant.getState() + ", " + restaurant.getZipCode());
+            addressTextView.setText(restaurant.getAddress() + ", " + restaurant.getZipCode());
 
             // Set restaurant rating
             ratingTextView.setText(String.valueOf(restaurant.getRating()));

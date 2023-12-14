@@ -30,7 +30,7 @@
             android:name=".Favorites"
             android:exported="false" />
         <activity
-            android:name=".FindBy"
+            android:name=".FindByZip"
             android:exported="false" />
         <activity
             android:name=".Results"
