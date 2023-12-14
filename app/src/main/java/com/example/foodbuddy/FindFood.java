@@ -16,7 +16,7 @@ public class FindFood extends AppCompatActivity {
         Button btFindFood = findViewById(R.id.btFindFood);
         Button btHome = findViewById(R.id.btHome);
         Button btFavorite = findViewById(R.id.btFavorite);
-        Button btUser = findViewById(R.id.btUser);
+        Button btUser = findViewById(R.id.btLogout);
         btFindFood.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -35,6 +35,13 @@ public class FindFood extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 startActivity(new Intent(FindFood.this, Favorites.class));
+            }
+        });
+
+        btUser.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(FindFood.this, Login.class));
             }
         });
 

@@ -7,7 +7,6 @@ import android.app.Dialog;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.widget.AdapterView;
@@ -36,7 +35,7 @@ public class Favorites extends AppCompatActivity {
 
         Button btHome = findViewById(R.id.btHome);
         Button btFavorite = findViewById(R.id.btFavorite);
-        Button btUser = findViewById(R.id.btUser);
+        Button btUser = findViewById(R.id.btLogout);
 
         // Initialize views
         lvFavorites = findViewById(R.id.lvFavorites);
@@ -49,6 +48,13 @@ public class Favorites extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 startActivity(new Intent(Favorites.this, FindFood.class));
+            }
+        });
+
+        btUser.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(Favorites.this, Login.class));
             }
         });
 

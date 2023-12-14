@@ -20,7 +20,7 @@ public class FindByZip extends AppCompatActivity {
         final Button btFindByZip = (Button) findViewById(R.id.btFindByZip);
         Button btHome = findViewById(R.id.btHome);
         Button btFavorite = findViewById(R.id.btFavorite);
-        Button btUser = findViewById(R.id.btUser);
+        Button btUser = findViewById(R.id.btLogout);
         btFindByZip.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -45,6 +45,13 @@ public class FindByZip extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 startActivity(new Intent(FindByZip.this, Favorites.class));
+            }
+        });
+
+        btUser.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(FindByZip.this, Login.class));
             }
         });
 
